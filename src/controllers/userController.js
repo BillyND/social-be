@@ -20,34 +20,31 @@ const getAllUser = async (req, res) => {
 };
 
 const registerUser = async (req, res) => {
+  const saltRounds = 10;
+  const id = "userId-" + Date.now();
+  const email = req?.body?.email?.trim();
+  const password = req?.body?.password?.trim();
   try {
-    const saltRounds = 10;
-    const id = "userId-" + Date.now();
-    const email = req?.body?.email?.trim();
-    const password = req?.body?.password?.trim();
+    const validateEmail = email?.match(
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
 
+    const validatePassword = password?.match(
+      /^[a-zA-Z0-9!@#$%^&*)(+=._-]{6,}$/g
+    );
     if (!email || !validateEmail) {
       return res.status(200).json({
         errCode: 1,
-        message: "Email invalidate!",
+        message: "Email Invalidate!",
       });
     }
 
     if (!password || !validatePassword) {
       return res.status(200).json({
         errCode: 1,
-        message: "Password invalidate!",
+        message: "Password Invalidate!",
       });
     }
-
-    const validateEmail = await email?.match(
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    );
-    console.log(">>oki", validateEmail);
-
-    const validatePassword = await password.match(
-      /^[a-zA-Z0-9!@#$%^&*)(+=._-]{6,}$/g
-    );
 
     const hashPassword = await bcrypt.hash(password, saltRounds);
     const options = {
@@ -73,6 +70,7 @@ const registerUser = async (req, res) => {
       data: resRegister,
     });
   } catch (error) {
+    console.log(">>erroe", error);
     return res.status(500).json({
       errCode: 1,
       message: "Server error!",
