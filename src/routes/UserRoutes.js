@@ -1,10 +1,13 @@
 const express = require("express");
-const { getAllUser, registerUser } = require("../controllers/userController");
+const userController = require("../controllers/userController");
+const verifyJWT = require("../middleware/verifyJWT");
+
 const router = express.Router();
 
-router.get("/user", getAllUser);
-router.post("/register", registerUser);
-// router.post("/update-user", updateBoard);
-// router.post("/delete-user", deleteBoard);
+router.get("/users", userController.getAllUser);
+router.post("/register", userController.registerUser);
+router.post("/login", userController.loginUser);
+router.post("/change-password", verifyJWT, userController.changePassword);
+router.post("/delete-user", verifyJWT, userController.softDeleteUser);
 
 module.exports = router;

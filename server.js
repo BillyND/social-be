@@ -4,6 +4,7 @@ const port = process.env.PORT || 3000;
 const hostname = process.env.HOST_NAME;
 const { connection } = require("./src/config/database");
 const userRouter = require("./src/routes/UserRoutes");
+const articleRouter = require("./src/routes/ArticleRoutes");
 
 const app = express();
 
@@ -22,7 +23,8 @@ app.use(express.json()); //for json
 app.use(express.urlencoded({ extended: true })); //for form data
 
 //routes
-app.use("/v1/api", userRouter);
+app.use("/api", userRouter);
+app.use("/api", articleRouter);
 
 app.get("/", (req, res) => {
   res.send("Api social running ");
