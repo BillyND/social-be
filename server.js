@@ -26,9 +26,7 @@ app.all("/*", function (req, res, next) {
 app.use("/v1/api", userRouter);
 
 app.get("/", (req, res) => {
-  return res.status(200).json({
-    mess: "Server running!!!",
-  });
+  res.send("Api social running ");
 });
 
 // testConnection
