@@ -10,7 +10,10 @@ const port = process.env.PORT;
 
 const app = express();
 
+//config req.body
 app.use(express.json()); //for json
+app.use(express.urlencoded({ extended: true })); //for form data
+
 app.use(cors());
 
 app.all("/*", function (req, res, next) {
@@ -24,7 +27,7 @@ app.use("/v1/api", userRouter);
 
 app.get("/", (req, res) => {
   return res.status(200).json({
-    mess: "okk",
+    mess: "Server running!!!",
   });
 });
 
