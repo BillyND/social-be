@@ -8,12 +8,8 @@ const articleSchema = new mongoose.Schema({
   author: String,
   createdAt: Date,
   updatedAt: Date,
-  deleted: {
-    type: Boolean,
-    default: false,
-  },
 });
 
-const Article = mongoose.model("article", articleSchema);
+const Article = mongoose.model("articles", articleSchema);
 
 module.exports = Article;
