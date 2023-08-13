@@ -6,7 +6,7 @@ const { connection } = require("./src/config/database");
 const app = express();
 
 // const userRoutes = require("./src/routes/UserRoutes");
-// const articleRoutes = require("./src/routes/articleRoutes");
+const articleRoutes = require("./src/routes/articleRoutes");
 const boardRoutes = require("./src/routes/boardRoutes");
 
 const cors = require("cors");
@@ -25,7 +25,7 @@ app.use(express.urlencoded({ extended: true })); //for form data
 
 //routes
 // app.use("/api", userRouter);
-// app.use("/api", articleRoutes);
+app.use("/api", articleRoutes);
 app.use("/api", boardRoutes);
 
 app.get("/", (req, res) => {
