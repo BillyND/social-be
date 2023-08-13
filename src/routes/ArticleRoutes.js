@@ -1,12 +1,12 @@
 const express = require("express");
 // const verifyJWT = require("../middleWare/verifyJWT");
-const {
-  createArticle,
-  updateArticle,
-  deleteArticle,
-  getAllArticles,
-  getArticleByAuthor,
-} = require("../controllers/articleController");
+// const {
+//   createArticle,
+//   updateArticle,
+//   deleteArticle,
+//   getAllArticles,
+//   getArticleByAuthor,
+// } = require("../controllers/articleController");
 
 const router = express.Router();
 
@@ -18,6 +18,8 @@ const router = express.Router();
 
 // router.get("/all-articles", getAllArticles);
 
-router.get("/all-articles/:email", getArticleByAuthor);
+router.get("/test", (req, res) => {
+  res.send("Test article routes");
+});
 
 module.exports = router;
