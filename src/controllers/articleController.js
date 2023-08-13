@@ -154,49 +154,49 @@ const getAllArticles = async (req, res) => {
   }
 };
 
-const getArticleByAuthor = async (req, res) => {
-  try {
-    const email = req.params.email; // Use params.email to get the author's email
-    const trimmedEmail = email?.trim(); // Trim email input
+// const getArticleByAuthor = async (req, res) => {
+//   try {
+//     const email = req.params.email; // Use params.email to get the author's email
+//     const trimmedEmail = email?.trim(); // Trim email input
 
-    const author = await Users.findOne({ email: trimmedEmail });
+//     const author = await Users.findOne({ email: trimmedEmail });
 
-    if (!author) {
-      return res.status(404).json({
-        errCode: 2,
-        message: "Author not found!",
-      });
-    }
+//     if (!author) {
+//       return res.status(404).json({
+//         errCode: 2,
+//         message: "Author not found!",
+//       });
+//     }
 
-    let articlesByAuthor = await Article.find({ author: author._id }).sort({
-      createdAt: -1,
-    });
+//     let articlesByAuthor = await Article.find({ author: author._id }).sort({
+//       createdAt: -1,
+//     });
 
-    // If no updatedAt is available, sort by createdAt
-    if (articlesByAuthor.length === 0) {
-      articlesByAuthor = await Article.find({ author: author._id }).sort({
-        createdAt: -1,
-      });
-    }
+//     // If no updatedAt is available, sort by createdAt
+//     if (articlesByAuthor.length === 0) {
+//       articlesByAuthor = await Article.find({ author: author._id }).sort({
+//         createdAt: -1,
+//       });
+//     }
 
-    return res.status(200).json({
-      errCode: 0,
-      message: "Articles by author retrieved successfully!",
-      data: articlesByAuthor,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      errCode: 1,
-      message: "Internal server error!",
-      error: error.message,
-    });
-  }
-};
+//     return res.status(200).json({
+//       errCode: 0,
+//       message: "Articles by author retrieved successfully!",
+//       data: articlesByAuthor,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       errCode: 1,
+//       message: "Internal server error!",
+//       error: error.message,
+//     });
+//   }
+// };
 
 module.exports = {
   // createArticle,
   // deleteArticle,
   // updateArticle,
   getAllArticles,
-  getArticleByAuthor,
+  // getArticleByAuthor,
 };
