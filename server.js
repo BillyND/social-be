@@ -3,11 +3,11 @@ const express = require("express");
 const port = process.env.PORT || 3000;
 const hostname = process.env.HOST_NAME;
 const { connection } = require("./src/config/database");
+const app = express();
+
 // const userRoutes = require("./src/routes/UserRoutes");
 const articleRoutes = require("./src/routes/articleRoutes");
 const boardRoutes = require("./src/routes/boardRoutes");
-
-const app = express();
 
 const cors = require("cors");
 
