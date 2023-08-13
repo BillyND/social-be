@@ -3,11 +3,10 @@ const express = require("express");
 const port = process.env.PORT || 3000;
 const hostname = process.env.HOST_NAME;
 const { connection } = require("./src/config/database");
-const userRouter = require("./src/routes/UserRoutes");
-const articleRouter = require("./src/routes/ArticleRoutes");
-
 const app = express();
-
+const boardRoutes = require("./src/routes/boardRoutes");
+const columnRoutes = require("./src/routes/columnRoutes");
+const cardRoutes = require("./src/routes/cardRoutes");
 const cors = require("cors");
 
 app.use(cors());
@@ -23,11 +22,12 @@ app.use(express.json()); //for json
 app.use(express.urlencoded({ extended: true })); //for form data
 
 //routes
-app.use("/api", userRouter);
-app.use("/api", articleRouter);
+app.use("/v1/api", boardRoutes);
+app.use("/v1/api", columnRoutes);
+app.use("/v1/api", cardRoutes);
 
 app.get("/", (req, res) => {
-  res.send("Api social running ");
+  res.send("Api social media running ");
 });
 
 // testConnection
