@@ -4,7 +4,7 @@ const port = process.env.PORT || 3000;
 const hostname = process.env.HOST_NAME;
 const { connection } = require("./src/config/database");
 // const userRouter = require("./src/routes/UserRoutes");
-const articleRouter = require("./src/routes/ArticleRoutes");
+// const articleRouter = require("./src/routes/ArticleRoutes");
 
 const app = express();
 
