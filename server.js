@@ -6,7 +6,7 @@ const { connection } = require("./src/config/database");
 const app = express();
 
 // const userRoutes = require("./src/routes/UserRoutes");
-const articleRoutes = require("./src/routes/articleRoutes");
+const articleRoutes = require("./src/routes/articlesRoutes");
 const boardRoutes = require("./src/routes/boardRoutes");
 
 const cors = require("cors");
