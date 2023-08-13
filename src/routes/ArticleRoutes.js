@@ -1,5 +1,5 @@
 const express = require("express");
-const verifyJWT = require("../middleWare/verifyJWT");
+// const verifyJWT = require("../middleWare/verifyJWT");
 const {
   createArticle,
   updateArticle,
@@ -10,13 +10,13 @@ const {
 
 const router = express.Router();
 
-router.post("/create-article", verifyJWT, createArticle);
+// router.post("/create-article", verifyJWT, createArticle);
 
-router.put("/update-article/:articleId", verifyJWT, updateArticle);
+// router.put("/update-article/:articleId", verifyJWT, updateArticle);
 
-router.delete("/delete-article/:articleId", verifyJWT, deleteArticle);
+// router.delete("/delete-article/:articleId", verifyJWT, deleteArticle);
 
-router.get("/all-articles", getAllArticles);
+// router.get("/all-articles", getAllArticles);
 
 router.get("/all-articles/:email", getArticleByAuthor);
 
