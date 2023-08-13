@@ -3,8 +3,8 @@ const express = require("express");
 const port = process.env.PORT || 3000;
 const hostname = process.env.HOST_NAME;
 const { connection } = require("./src/config/database");
-// const userRouter = require("./src/routes/UserRoutes");
-// const articleRouter = require("./src/routes/articleRoutes");
+// const userRoutes = require("./src/routes/UserRoutes");
+const articleRoutes = require("./src/routes/articleRoutes");
 const boardRoutes = require("./src/routes/boardRoutes");
 
 const app = express();
@@ -25,7 +25,7 @@ app.use(express.urlencoded({ extended: true })); //for form data
 
 //routes
 // app.use("/api", userRouter);
-// app.use("/api", articleRouter);
+app.use("/api", articleRoutes);
 app.use("/api", boardRoutes);
 
 app.get("/", (req, res) => {
