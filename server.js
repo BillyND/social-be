@@ -24,7 +24,7 @@ app.use(express.urlencoded({ extended: true })); //for form data
 
 //routes
 // app.use("/api", userRouter);
-app.use("/api", articleRouter);
+app.use("/v1/api", articleRouter);
 
 app.get("/", (req, res) => {
   res.send("Api social running ");
