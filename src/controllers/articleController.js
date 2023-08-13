@@ -1,5 +1,5 @@
 const Article = require("../models/Article");
-const Users = require("../models/User");
+const User = require("../models/User");
 
 // const createArticle = async (req, res) => {
 //   try {
