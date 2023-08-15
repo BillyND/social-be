@@ -17,9 +17,9 @@ router.put("/update-article", verifyJWT, updateArticle);
 
 router.delete("/delete-article", verifyJWT, deleteArticle);
 
-router.get("/articles-by-email", getArticleByAuthor);
+router.get("/articles/:email", getArticleByAuthor);
 
-router.get("/all-articles", getAllArticles);
+router.get("/articles", getAllArticles);
 
 router.post("/articles/like", verifyJWT, likeArticle);
 

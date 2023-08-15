@@ -155,7 +155,7 @@ const getAllArticles = async (req, res) => {
 };
 
 const getArticleByAuthor = async (req, res) => {
-  const email = req.body.email; // Use req.body.email to get the author's email
+  const email = req.params.email; // Use req.body.email to get the author's email
   const trimmedEmail = email?.trim(); // Trim email input
 
   try {
