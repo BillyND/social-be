@@ -1,27 +1,26 @@
 const express = require("express");
-// const verifyJWT = require("../middleWare/verifyJWT");
+const verifyJWT = require("../middleWare/verifyJWT");
 const {
-  // createArticle,
-  // updateArticle,
-  // deleteArticle,
+  createArticle,
+  updateArticle,
+  deleteArticle,
   getAllArticles,
   getArticleByAuthor,
+  likeArticle,
 } = require("../controllers/articleController");
 
 const router = express.Router();
 
-// router.post("/create-article", verifyJWT, createArticle);
+router.post("/create-article", verifyJWT, createArticle);
 
-// router.put("/update-article/:articleId", verifyJWT, updateArticle);
+router.put("/update-article", verifyJWT, updateArticle);
 
-// router.delete("/delete-article/:articleId", verifyJWT, deleteArticle);
+router.delete("/delete-article", verifyJWT, deleteArticle);
 
-router.get("/all-articles/:email", getArticleByAuthor);
+router.get("/articles-by-email", getArticleByAuthor);
 
 router.get("/all-articles", getAllArticles);
 
-router.get("/test", (req, res) => {
-  res.send("Test article routes");
-});
+router.post("/articles/like", verifyJWT, likeArticle);
 
 module.exports = router;

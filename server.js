@@ -5,7 +5,7 @@ const hostname = process.env.HOST_NAME;
 const { connection } = require("./src/config/database");
 const app = express();
 
-// const userRoutes = require("./src/routes/UserRoutes");
+const userRoutes = require("./src/routes/usersRoutes");
 const articleRoutes = require("./src/routes/articlesRoutes");
 
 const cors = require("cors");
@@ -23,7 +23,7 @@ app.use(express.json()); //for json
 app.use(express.urlencoded({ extended: true })); //for form data
 
 //routes
-// app.use("/api", userRouter);
+app.use("/api", userRoutes);
 app.use("/api", articleRoutes);
 
 app.get("/", (req, res) => {

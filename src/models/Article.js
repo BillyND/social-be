@@ -5,6 +5,7 @@ const articleSchema = new mongoose.Schema({
   image: String,
   comments: Array,
   likesCount: Number,
+  likes: Array,
   author: String,
   createdAt: Date,
   updatedAt: Date,
