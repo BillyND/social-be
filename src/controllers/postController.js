@@ -1,9 +1,9 @@
-const Article = require("../models/Article");
+const Article = require("../models/Post");
 const User = require("../models/User");
 
 const createArticle = async (req, res) => {
   try {
-    const { body, image } = req.body.article;
+    const { body, image } = req.body.post;
     const email = req.body.email;
     const trimmedEmail = email?.trim(); // Trim email input
 
@@ -41,7 +41,7 @@ const createArticle = async (req, res) => {
 
 const deleteArticle = async (req, res) => {
   try {
-    const articleId = req.params.articleId; // Assuming you pass article ID as a parameter
+    const postId = req.params.postId; // Assuming you pass post ID as a parameter
     const email = req.body.email;
     const trimmedEmail = email?.trim(); // Trim email input
 
@@ -55,7 +55,7 @@ const deleteArticle = async (req, res) => {
     }
 
     const deletedArticle = await Article.findOneAndDelete({
-      _id: articleId,
+      _id: postId,
       author: author._id,
     });
 
@@ -82,11 +82,11 @@ const deleteArticle = async (req, res) => {
 
 const updateArticle = async (req, res) => {
   try {
-    const { body, image } = req.body.article;
+    const { body, image } = req.body.post;
     const trimmedBody = body?.trim(); // Trim body input
     const trimmedImage = image?.trim(); // Trim image input
 
-    const articleId = req.params.articleId?.trim(); // Trim articleId input
+    const postId = req.params.postId?.trim(); // Trim postId input
     const email = req.body.email;
     const trimmedEmail = email?.trim(); // Trim email input
 
@@ -101,7 +101,7 @@ const updateArticle = async (req, res) => {
 
     const updatedArticle = await Article.findOneAndUpdate(
       {
-        _id: articleId,
+        _id: postId,
         author: author._id,
       },
       {
@@ -135,7 +135,7 @@ const updateArticle = async (req, res) => {
 
 const getAllArticles = async (req, res) => {
   try {
-    const articles = await Article.find().sort({
+    const posts = await Article.find().sort({
       updatedAt: -1,
       createdAt: -1,
     });
@@ -143,7 +143,7 @@ const getAllArticles = async (req, res) => {
     return res.status(200).json({
       errCode: 0,
       message: "Articles retrieved successfully!",
-      data: articles,
+      data: posts,
     });
   } catch (error) {
     return res.status(500).json({
@@ -168,13 +168,13 @@ const getArticleByAuthor = async (req, res) => {
       });
     }
 
-    let articlesByAuthor = await Article.find({ author: author._id }).sort({
+    let postsByAuthor = await Article.find({ author: author._id }).sort({
       createdAt: -1,
     });
 
     // If no updatedAt is available, sort by createdAt
-    if (articlesByAuthor.length === 0) {
-      articlesByAuthor = await Article.find({ author: author._id }).sort({
+    if (postsByAuthor.length === 0) {
+      postsByAuthor = await Article.find({ author: author._id }).sort({
         createdAt: -1,
       });
     }
@@ -182,7 +182,7 @@ const getArticleByAuthor = async (req, res) => {
     return res.status(200).json({
       errCode: 0,
       message: "Articles by author retrieved successfully!",
-      data: articlesByAuthor,
+      data: postsByAuthor,
     });
   } catch (error) {
     return res.status(500).json({
@@ -195,20 +195,20 @@ const getArticleByAuthor = async (req, res) => {
 
 const likeArticle = async (req, res) => {
   try {
-    const articleId = req.body.articleId; // Use req.body.articleId to get the article ID
+    const postId = req.body.postId; // Use req.body.postId to get the post ID
     const userId = req.user.id;
 
-    const article = await Article.findById(articleId);
-    if (!article) {
+    const post = await Article.findById(postId);
+    if (!post) {
       return res.status(404).json({ message: "Article not found" });
     }
 
-    if (article.likes.includes(userId)) {
+    if (post.likes.includes(userId)) {
       return res.status(400).json({ message: "Article already liked" });
     }
 
-    article.likes.push(userId);
-    await article.save();
+    post.likes.push(userId);
+    await post.save();
 
     res.status(200).json({ message: "Article liked successfully" });
   } catch (error) {

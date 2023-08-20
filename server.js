@@ -5,8 +5,8 @@ const hostname = process.env.HOST_NAME;
 const { connection } = require("./src/config/database");
 const app = express();
 
-const userRoutes = require("./src/routes/usersRoutes");
-const articleRoutes = require("./src/routes/articlesRoutes");
+const userRoutes = require("./src/routes/user");
+const postRoutes = require("./src/routes/post");
 
 const cors = require("cors");
 
@@ -24,7 +24,7 @@ app.use(express.urlencoded({ extended: true })); //for form data
 
 //routes
 app.use("/api", userRoutes);
-app.use("/api", articleRoutes);
+app.use("/api", postRoutes);
 
 app.get("/", (req, res) => {
   res.send("Api social running ");
