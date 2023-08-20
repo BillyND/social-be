@@ -1,24 +1,66 @@
 const mongoose = require("mongoose");
+const { isEmail } = require("validator");
 
-const userSchema = new mongoose.Schema({
-  name: String,
-  email: {
-    type: String,
-    unique: true,
-    required: true,
+const userSchema = new mongoose.Schema(
+  {
+    username: {
+      type: String,
+      required: [true, "Required"],
+      minlength: [6, "Must be at least 6 characters"],
+      maxlength: [20, "Must be less than 20 characters"],
+      unique: true,
+    },
+    displayName: {
+      type: String,
+      default: "New User",
+    },
+    about: {
+      type: String,
+      default: "I'm a new user",
+    },
+    age: {
+      type: Number,
+      minlength: 14,
+      default: 99,
+    },
+    email: {
+      type: String,
+      required: [true, "Required"],
+      maxlength: [50, "Must be 50 characters or less"],
+      unique: true,
+      validate: [isEmail, "Please enter a valid email"],
+    },
+    password: {
+      type: String,
+      required: [true, "Required"],
+      select: false,
+      minlength: [8, "Must be 8 characters or more"],
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
+    profilePicture: {
+      type: String,
+      default:
+        "https://preview.redd.it/rrz3hmsxcll71.png?width=640&crop=smart&auto=webp&s=87cc5ed38d8f088ef9fffef7a4c5756b64309d6a",
+    },
+
+    followers: {
+      type: Array,
+      default: [],
+    },
+    followings: {
+      type: Array,
+      default: [],
+    },
+    favorites: {
+      type: Array,
+      default: [],
+    },
   },
-  password: {
-    type: String,
-    required: true,
-  },
-  avatar: String,
-  createdAt: Date,
-  updatedAt: Date,
-  deleted: {
-    type: Boolean,
-    default: false,
-  },
-});
+  { timestamps: true }
+);
 
 const User = mongoose.model("User", userSchema);
 
