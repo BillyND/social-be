@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+// const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
 const regexEmail =
@@ -77,59 +77,59 @@ const userController = {
     }
   },
 
-  loginUser: async (req, res) => {
-    try {
-      const { email, password } = req.body;
+  // loginUser: async (req, res) => {
+  //   try {
+  //     const { email, password } = req.body;
 
-      const trimmedEmail = email?.trim(); // Trim email input
+  //     const trimmedEmail = email?.trim(); // Trim email input
 
-      if (!trimmedEmail || !password) {
-        return res.status(400).json({
-          errCode: 1,
-          message: "Please provide both email and password.",
-        });
-      }
+  //     if (!trimmedEmail || !password) {
+  //       return res.status(400).json({
+  //         errCode: 1,
+  //         message: "Please provide both email and password.",
+  //       });
+  //     }
 
-      const user = await User.findOne({ email: trimmedEmail });
+  //     const user = await User.findOne({ email: trimmedEmail });
 
-      if (!user) {
-        return res.status(401).json({
-          errCode: 1,
-          message: "Invalid email or password.",
-        });
-      }
+  //     if (!user) {
+  //       return res.status(401).json({
+  //         errCode: 1,
+  //         message: "Invalid email or password.",
+  //       });
+  //     }
 
-      const isPasswordValid = await bcrypt.compare(password, user.password);
+  //     const isPasswordValid = await bcrypt.compare(password, user.password);
 
-      if (!isPasswordValid) {
-        return res.status(401).json({
-          errCode: 1,
-          message: "Invalid email or password.",
-        });
-      }
+  //     if (!isPasswordValid) {
+  //       return res.status(401).json({
+  //         errCode: 1,
+  //         message: "Invalid email or password.",
+  //       });
+  //     }
 
-      const token = jwt.sign(
-        { userId: user.id, userEmail: user.email },
-        process.env.ACCESS_TOKEN_SECRET,
-        {
-          expiresIn: "1h",
-        }
-      );
+  //     const token = jwt.sign(
+  //       { userId: user.id, userEmail: user.email },
+  //       process.env.ACCESS_TOKEN_SECRET,
+  //       {
+  //         expiresIn: "1h",
+  //       }
+  //     );
 
-      return res.status(200).json({
-        errCode: 0,
-        message: "Login successful!",
-        token: token,
-      });
-    } catch (error) {
-      console.error("Login error:", error);
-      return res.status(500).json({
-        errCode: 1,
-        message: "Internal server error.",
-        error: error.message,
-      });
-    }
-  },
+  //     return res.status(200).json({
+  //       errCode: 0,
+  //       message: "Login successful!",
+  //       token: token,
+  //     });
+  //   } catch (error) {
+  //     console.error("Login error:", error);
+  //     return res.status(500).json({
+  //       errCode: 1,
+  //       message: "Internal server error.",
+  //       error: error.message,
+  //     });
+  //   }
+  // },
 
   changePassword: async (req, res) => {
     try {

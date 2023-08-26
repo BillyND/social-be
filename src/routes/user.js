@@ -8,7 +8,7 @@ const router = express.Router();
 router.get("/users/:id", userController.getUserById);
 
 //LOGIN
-router.post("/login", userController.loginUser);
+// router.post("/login", userController.loginUser);
 
 //REGISTER
 router.post("/register", userController.registerUser);
