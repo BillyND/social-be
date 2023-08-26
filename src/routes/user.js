@@ -1,6 +1,6 @@
 const express = require("express");
 const userController = require("../controllers/userController");
-const verifyJWT = require("../middleWare/verifyJWT");
+// const verifyJWT = require("../middleWare/verifyJWT");
 
 const router = express.Router();
 
@@ -13,7 +13,7 @@ router.post("/login", userController.loginUser);
 //REGISTER
 router.post("/register", userController.registerUser);
 
-router.post("/change-password", verifyJWT, userController.changePassword);
-router.post("/delete-user", verifyJWT, userController.softDeleteUser);
+router.post("/change-password", userController.changePassword);
+router.post("/delete-user", userController.softDeleteUser);
 
 module.exports = router;

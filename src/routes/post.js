@@ -1,19 +1,19 @@
 const express = require("express");
-const verifyJWT = require("../middleWare/verifyJWT");
+// const verifyJWT = require("../middleWare/verifyJWT");
 const postController = require("../controllers/postController");
 
 const router = express.Router();
 
-router.post("/create-post", verifyJWT, postController.createArticle);
+router.post("/create-post", postController.createArticle);
 
-router.put("/update-post", verifyJWT, postController.updateArticle);
+router.put("/update-post", postController.updateArticle);
 
-router.delete("/delete-post", verifyJWT, postController.deleteArticle);
+router.delete("/delete-post", postController.deleteArticle);
 
 router.get("/posts/:email", postController.getArticleByAuthor);
 
 router.get("/posts", postController.getAllArticles);
 
-router.post("/posts/like", verifyJWT, postController.likeArticle);
+router.post("/posts/like", postController.likeArticle);
 
 module.exports = router;
