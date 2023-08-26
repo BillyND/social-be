@@ -1,13 +1,13 @@
-const Article = require("../models/Article");
+const Post = require("../models/Post");
 const User = require("../models/User");
 
 const createArticle = async (req, res) => {
   try {
-    const { body, image } = req.body.article;
+    const { body, image } = req.body.post;
     const email = req.body.email;
     const trimmedEmail = email?.trim(); // Trim email input
 
-    const author = await Users.findOne({ email: trimmedEmail });
+    const author = await User.findOne({ email: trimmedEmail });
 
     if (!author) {
       return res.status(404).json({
@@ -23,11 +23,11 @@ const createArticle = async (req, res) => {
       createdAt: new Date(),
     };
 
-    const createdArticle = await Article.create(newArticle);
+    const createdArticle = await Post.create(newArticle);
 
     return res.status(201).json({
       errCode: 0,
-      message: "Article created successfully!",
+      message: "Post created successfully!",
       data: createdArticle,
     });
   } catch (error) {
@@ -41,11 +41,11 @@ const createArticle = async (req, res) => {
 
 const deleteArticle = async (req, res) => {
   try {
-    const articleId = req.params.articleId; // Assuming you pass article ID as a parameter
+    const postId = req.params.postId; // Assuming you pass post ID as a parameter
     const email = req.body.email;
     const trimmedEmail = email?.trim(); // Trim email input
 
-    const author = await Users.findOne({ email: trimmedEmail });
+    const author = await User.findOne({ email: trimmedEmail });
 
     if (!author) {
       return res.status(404).json({
@@ -54,21 +54,21 @@ const deleteArticle = async (req, res) => {
       });
     }
 
-    const deletedArticle = await Article.findOneAndDelete({
-      _id: articleId,
+    const deletedArticle = await Post.findOneAndDelete({
+      _id: postId,
       author: author._id,
     });
 
     if (!deletedArticle) {
       return res.status(404).json({
         errCode: 3,
-        message: "Article not found or you don't have permission to delete it.",
+        message: "Post not found or you don't have permission to delete it.",
       });
     }
 
     return res.status(200).json({
       errCode: 0,
-      message: "Article deleted successfully!",
+      message: "Post deleted successfully!",
       data: deletedArticle,
     });
   } catch (error) {
@@ -82,15 +82,15 @@ const deleteArticle = async (req, res) => {
 
 const updateArticle = async (req, res) => {
   try {
-    const { body, image } = req.body.article;
+    const { body, image } = req.body.post;
     const trimmedBody = body?.trim(); // Trim body input
     const trimmedImage = image?.trim(); // Trim image input
 
-    const articleId = req.params.articleId?.trim(); // Trim articleId input
+    const postId = req.params.postId?.trim(); // Trim postId input
     const email = req.body.email;
     const trimmedEmail = email?.trim(); // Trim email input
 
-    const author = await Users.findOne({ email: trimmedEmail });
+    const author = await User.findOne({ email: trimmedEmail });
 
     if (!author) {
       return res.status(404).json({
@@ -99,9 +99,9 @@ const updateArticle = async (req, res) => {
       });
     }
 
-    const updatedArticle = await Article.findOneAndUpdate(
+    const updatedArticle = await Post.findOneAndUpdate(
       {
-        _id: articleId,
+        _id: postId,
         author: author._id,
       },
       {
@@ -115,13 +115,13 @@ const updateArticle = async (req, res) => {
     if (!updatedArticle) {
       return res.status(404).json({
         errCode: 3,
-        message: "Article not found or you don't have permission to edit it.",
+        message: "Post not found or you don't have permission to edit it.",
       });
     }
 
     return res.status(200).json({
       errCode: 0,
-      message: "Article updated successfully!",
+      message: "Post updated successfully!",
       data: updatedArticle,
     });
   } catch (error) {
@@ -135,7 +135,7 @@ const updateArticle = async (req, res) => {
 
 const getAllArticles = async (req, res) => {
   try {
-    const articles = await Article.find().sort({
+    const posts = await Post.find().sort({
       updatedAt: -1,
       createdAt: -1,
     });
@@ -143,7 +143,7 @@ const getAllArticles = async (req, res) => {
     return res.status(200).json({
       errCode: 0,
       message: "Articles retrieved successfully!",
-      data: articles,
+      data: posts,
     });
   } catch (error) {
     return res.status(500).json({
@@ -155,7 +155,7 @@ const getAllArticles = async (req, res) => {
 };
 
 const getArticleByAuthor = async (req, res) => {
-  const email = req.body.email; // Use req.body.email to get the author's email
+  const email = req.params.email; // Use req.body.email to get the author's email
   const trimmedEmail = email?.trim(); // Trim email input
 
   try {
@@ -168,13 +168,13 @@ const getArticleByAuthor = async (req, res) => {
       });
     }
 
-    let articlesByAuthor = await Article.find({ author: author._id }).sort({
+    let postsByAuthor = await Post.find({ author: author._id }).sort({
       createdAt: -1,
     });
 
     // If no updatedAt is available, sort by createdAt
-    if (articlesByAuthor.length === 0) {
-      articlesByAuthor = await Article.find({ author: author._id }).sort({
+    if (postsByAuthor.length === 0) {
+      postsByAuthor = await Post.find({ author: author._id }).sort({
         createdAt: -1,
       });
     }
@@ -182,7 +182,7 @@ const getArticleByAuthor = async (req, res) => {
     return res.status(200).json({
       errCode: 0,
       message: "Articles by author retrieved successfully!",
-      data: articlesByAuthor,
+      data: postsByAuthor,
     });
   } catch (error) {
     return res.status(500).json({
@@ -195,22 +195,22 @@ const getArticleByAuthor = async (req, res) => {
 
 const likeArticle = async (req, res) => {
   try {
-    const articleId = req.body.articleId; // Use req.body.articleId to get the article ID
+    const postId = req.body.postId; // Use req.body.postId to get the post ID
     const userId = req.user.id;
 
-    const article = await Article.findById(articleId);
-    if (!article) {
-      return res.status(404).json({ message: "Article not found" });
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
     }
 
-    if (article.likes.includes(userId)) {
-      return res.status(400).json({ message: "Article already liked" });
+    if (post.likes.includes(userId)) {
+      return res.status(400).json({ message: "Post already liked" });
     }
 
-    article.likes.push(userId);
-    await article.save();
+    post.likes.push(userId);
+    await post.save();
 
-    res.status(200).json({ message: "Article liked successfully" });
+    res.status(200).json({ message: "Post liked successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
