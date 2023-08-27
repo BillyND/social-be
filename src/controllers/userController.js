@@ -17,8 +17,8 @@ const userController = {
   registerUser: async (req, res) => {
     try {
       const { email, password } = req.body;
-      const trimmedEmail = email?.trim();
-      const trimmedPassword = password?.trim();
+      const trimmedEmail = email.trim();
+      const trimmedPassword = password.trim();
       const isEmailValid = trimmedEmail && regexEmail.test(trimmedEmail);
       const isPasswordValid =
         trimmedPassword && trimmedPassword.match(regexPassword);
