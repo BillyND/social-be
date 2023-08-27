@@ -1,6 +1,6 @@
 var bcrypt = require("bcryptjs");
-// const jwt = require("jsonwebtoken");
-// const { regexEmail, regexPassword } = require("../constant");
+const jwt = require("jsonwebtoken");
+const { regexEmail, regexPassword } = require("../constant");
 const User = require("../models/User");
 
 const userController = {
