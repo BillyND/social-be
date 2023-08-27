@@ -8,12 +8,13 @@ const router = express.Router();
 router.get("/users/:id", userController.getUserById);
 
 //LOGIN
-// router.post("/login", userController.loginUser);
+router.post("/login", userController.loginUser);
 
 //REGISTER
 router.post("/register", userController.registerUser);
 
-// router.post("/change-password", userController.changePassword);
+//CHANGE PASSWORD
+router.post("/change-password", userController.changePassword);
 // router.post("/delete-user", userController.softDeleteUser);
 
 module.exports = router;
