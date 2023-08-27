@@ -15,54 +15,54 @@ const userController = {
   },
   //REGISTER
   registerUser: async (req, res) => {
-    try {
-      const { email, password } = req?.body;
-      const trimmedEmail = email?.trim();
-      const trimmedPassword = password?.trim();
-      const isEmailValid = trimmedEmail && regexEmail.test(trimmedEmail);
-      const isPasswordValid =
-        trimmedPassword && trimmedPassword.match(regexPassword);
-      if (!isEmailValid) {
-        return res.status(400).json({
-          errCode: 1,
-          message: "Invalid email format!",
-        });
-      }
-      if (!isPasswordValid) {
-        return res.status(400).json({
-          errCode: 1,
-          message: "Password must be at least 6 characters long.",
-        });
-      }
-      const salt = bcrypt.genSaltSync(10);
-      const hashPassword = bcrypt.hashSync(trimmedPassword, salt);
-      const atIndex = trimmedEmail.indexOf("@");
-      const userName = atIndex !== -1 ? trimmedEmail.substring(0, atIndex) : "";
-      const newUser = {
-        email: trimmedEmail,
-        password: hashPassword,
-        username: userName,
-      };
-      const existingUser = await User.findOne({ email: trimmedEmail });
-      if (existingUser) {
-        return res.status(409).json({
-          errCode: 1,
-          message: "Email already exists!",
-        });
-      }
-      const createdUser = await User.create(newUser);
-      return res.status(201).json({
-        errCode: 0,
-        message: "Registration successful!",
-        data: createdUser,
-      });
-    } catch (error) {
-      return res.status(500).json({
-        errCode: 1,
-        message: "Internal server error!",
-        error: error.message,
-      });
-    }
+    // try {
+    //   const { email, password } = req?.body;
+    //   const trimmedEmail = email?.trim();
+    //   const trimmedPassword = password?.trim();
+    //   const isEmailValid = trimmedEmail && regexEmail.test(trimmedEmail);
+    //   const isPasswordValid =
+    //     trimmedPassword && trimmedPassword.match(regexPassword);
+    //   if (!isEmailValid) {
+    //     return res.status(400).json({
+    //       errCode: 1,
+    //       message: "Invalid email format!",
+    //     });
+    //   }
+    //   if (!isPasswordValid) {
+    //     return res.status(400).json({
+    //       errCode: 1,
+    //       message: "Password must be at least 6 characters long.",
+    //     });
+    //   }
+    //   const salt = bcrypt.genSaltSync(10);
+    //   const hashPassword = bcrypt.hashSync(trimmedPassword, salt);
+    //   const atIndex = trimmedEmail.indexOf("@");
+    //   const userName = atIndex !== -1 ? trimmedEmail.substring(0, atIndex) : "";
+    //   const newUser = {
+    //     email: trimmedEmail,
+    //     password: hashPassword,
+    //     username: userName,
+    //   };
+    //   const existingUser = await User.findOne({ email: trimmedEmail });
+    //   if (existingUser) {
+    //     return res.status(409).json({
+    //       errCode: 1,
+    //       message: "Email already exists!",
+    //     });
+    //   }
+    //   const createdUser = await User.create(newUser);
+    //   return res.status(201).json({
+    //     errCode: 0,
+    //     message: "Registration successful!",
+    //     data: createdUser,
+    //   });
+    // } catch (error) {
+    //   return res.status(500).json({
+    //     errCode: 1,
+    //     message: "Internal server error!",
+    //     error: error.message,
+    //   });
+    // }
   },
   // loginUser: async (req, res) => {
   //   try {
