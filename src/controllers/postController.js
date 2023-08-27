@@ -1,7 +1,7 @@
 const Post = require("../models/Post");
 const User = require("../models/User");
 
-const createArticle = async (req, res) => {
+const createPost = async (req, res) => {
   try {
     const { body, image } = req.body.post;
     const email = req.body.email;
@@ -16,19 +16,19 @@ const createArticle = async (req, res) => {
       });
     }
 
-    const newArticle = {
+    const newPost = {
       body,
       image,
       author: author._id,
       createdAt: new Date(),
     };
 
-    const createdArticle = await Post.create(newArticle);
+    const createdPost = await Post.create(newPost);
 
     return res.status(201).json({
       errCode: 0,
       message: "Post created successfully!",
-      data: createdArticle,
+      data: createdPost,
     });
   } catch (error) {
     return res.status(500).json({
@@ -39,7 +39,7 @@ const createArticle = async (req, res) => {
   }
 };
 
-const deleteArticle = async (req, res) => {
+const deletePost = async (req, res) => {
   try {
     const postId = req.params.postId; // Assuming you pass post ID as a parameter
     const email = req.body.email;
@@ -54,12 +54,12 @@ const deleteArticle = async (req, res) => {
       });
     }
 
-    const deletedArticle = await Post.findOneAndDelete({
+    const deletedPost = await Post.findOneAndDelete({
       _id: postId,
       author: author._id,
     });
 
-    if (!deletedArticle) {
+    if (!deletedPost) {
       return res.status(404).json({
         errCode: 3,
         message: "Post not found or you don't have permission to delete it.",
@@ -69,7 +69,7 @@ const deleteArticle = async (req, res) => {
     return res.status(200).json({
       errCode: 0,
       message: "Post deleted successfully!",
-      data: deletedArticle,
+      data: deletedPost,
     });
   } catch (error) {
     return res.status(500).json({
@@ -80,7 +80,7 @@ const deleteArticle = async (req, res) => {
   }
 };
 
-const updateArticle = async (req, res) => {
+const updatePost = async (req, res) => {
   try {
     const { body, image } = req.body.post;
     const trimmedBody = body?.trim(); // Trim body input
@@ -99,7 +99,7 @@ const updateArticle = async (req, res) => {
       });
     }
 
-    const updatedArticle = await Post.findOneAndUpdate(
+    const updatedPost = await Post.findOneAndUpdate(
       {
         _id: postId,
         author: author._id,
@@ -112,7 +112,7 @@ const updateArticle = async (req, res) => {
       { new: true }
     );
 
-    if (!updatedArticle) {
+    if (!updatedPost) {
       return res.status(404).json({
         errCode: 3,
         message: "Post not found or you don't have permission to edit it.",
@@ -122,7 +122,7 @@ const updateArticle = async (req, res) => {
     return res.status(200).json({
       errCode: 0,
       message: "Post updated successfully!",
-      data: updatedArticle,
+      data: updatedPost,
     });
   } catch (error) {
     return res.status(500).json({
@@ -133,7 +133,7 @@ const updateArticle = async (req, res) => {
   }
 };
 
-const getAllArticles = async (req, res) => {
+const getAllPosts = async (req, res) => {
   try {
     const posts = await Post.find().sort({
       updatedAt: -1,
@@ -142,7 +142,7 @@ const getAllArticles = async (req, res) => {
 
     return res.status(200).json({
       errCode: 0,
-      message: "Articles retrieved successfully!",
+      message: "Posts retrieved successfully!",
       data: posts,
     });
   } catch (error) {
@@ -154,7 +154,7 @@ const getAllArticles = async (req, res) => {
   }
 };
 
-const getArticleByAuthor = async (req, res) => {
+const getPostByAuthor = async (req, res) => {
   const email = req.params.email; // Use req.body.email to get the author's email
   const trimmedEmail = email?.trim(); // Trim email input
 
@@ -181,7 +181,7 @@ const getArticleByAuthor = async (req, res) => {
 
     return res.status(200).json({
       errCode: 0,
-      message: "Articles by author retrieved successfully!",
+      message: "Posts by author retrieved successfully!",
       data: postsByAuthor,
     });
   } catch (error) {
@@ -193,7 +193,7 @@ const getArticleByAuthor = async (req, res) => {
   }
 };
 
-const likeArticle = async (req, res) => {
+const likePost = async (req, res) => {
   try {
     const postId = req.body.postId; // Use req.body.postId to get the post ID
     const userId = req.user.id;
@@ -218,10 +218,10 @@ const likeArticle = async (req, res) => {
 };
 
 module.exports = {
-  createArticle,
-  deleteArticle,
-  updateArticle,
-  getAllArticles,
-  getArticleByAuthor,
-  likeArticle,
+  createPost,
+  deletePost,
+  updatePost,
+  getAllPosts,
+  getPostByAuthor,
+  likePost,
 };
