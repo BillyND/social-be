@@ -6,7 +6,7 @@ const { connection } = require("./src/config/database");
 const app = express();
 
 const userRoutes = require("./src/routes/user");
-const postRoutes = require("./src/routes/post");
+// const postRoutes = require("./src/routes/post");
 
 const cors = require("cors");
 
@@ -24,7 +24,7 @@ app.use(express.urlencoded({ extended: true })); //for form data
 
 //routes
 app.use("/v1/api", userRoutes);
-app.use("/v1/api", postRoutes);
+// app.use("/v1/api", postRoutes);
 
 app.get("/", (req, res) => {
   res.send("Api social running ");
