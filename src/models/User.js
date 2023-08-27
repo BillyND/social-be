@@ -3,13 +3,6 @@ const { isEmail } = require("validator");
 
 const userSchema = new mongoose.Schema(
   {
-    username: {
-      type: String,
-      required: [true, "Required"],
-      minlength: [6, "Must be at least 6 characters"],
-      maxlength: [20, "Must be less than 20 characters"],
-      unique: true,
-    },
     displayName: {
       type: String,
       default: "New User",
@@ -45,7 +38,6 @@ const userSchema = new mongoose.Schema(
       default:
         "https://preview.redd.it/rrz3hmsxcll71.png?width=640&crop=smart&auto=webp&s=87cc5ed38d8f088ef9fffef7a4c5756b64309d6a",
     },
-
     followers: {
       type: Array,
       default: [],
