@@ -6,7 +6,7 @@ const postController = {
     try {
       const { body, image } = req.body.post;
       const email = req.body.email;
-      const trimmedEmail = email?.trim(); // Trim email input
+      const trimmedEmail = email.trim(); // Trim email input
 
       const author = await User.findOne({ email: trimmedEmail });
 
@@ -44,7 +44,7 @@ const postController = {
     try {
       const postId = req.params.postId; // Assuming you pass post ID as a parameter
       const email = req.body.email;
-      const trimmedEmail = email?.trim(); // Trim email input
+      const trimmedEmail = email.trim(); // Trim email input
 
       const author = await User.findOne({ email: trimmedEmail });
 
@@ -84,12 +84,12 @@ const postController = {
   updatePost: async (req, res) => {
     try {
       const { body, image } = req.body.post;
-      const trimmedBody = body?.trim(); // Trim body input
-      const trimmedImage = image?.trim(); // Trim image input
+      const trimmedBody = body.trim(); // Trim body input
+      const trimmedImage = image.trim(); // Trim image input
 
-      const postId = req.params.postId?.trim(); // Trim postId input
+      const postId = req.params.postId.trim(); // Trim postId input
       const email = req.body.email;
-      const trimmedEmail = email?.trim(); // Trim email input
+      const trimmedEmail = email.trim(); // Trim email input
 
       const author = await User.findOne({ email: trimmedEmail });
 
@@ -157,7 +157,7 @@ const postController = {
 
   getPostByAuthor: async (req, res) => {
     const email = req.params.email; // Use req.body.email to get the author's email
-    const trimmedEmail = email?.trim(); // Trim email input
+    const trimmedEmail = email.trim(); // Trim email input
 
     try {
       const author = await User.findOne({ email: trimmedEmail });
