@@ -5,14 +5,14 @@ const User = require("../models/User");
 
 const userController = {
   //GET A USER
-  // getUserById: async (req, res) => {
-  //   try {
-  //     const user = await User.findById(req.params.id);
-  //     res.status(200).json(user);
-  //   } catch (err) {
-  //     res.status(500).json(err);
-  //   }
-  // },
+  getUserById: async (req, res) => {
+    try {
+      const user = await User.findById(req.params.id);
+      res.status(200).json(user);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
   // //REGISTER
   // registerUser: async (req, res) => {
   //   // try {
