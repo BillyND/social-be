@@ -169,44 +169,44 @@ const userController = {
   //     });
   //   }
   // },
-  softDeleteUser: async (req, res) => {
-    try {
-      const { email } = req.body;
-      const trimmedEmail = email?.trim(); // Trim email input
-      if (!trimmedEmail) {
-        return res.status(400).json({
-          errCode: 1,
-          message: "Please provide email.",
-        });
-      }
-      if (!regexEmail.test(trimmedEmail)) {
-        return res.status(400).json({
-          errCode: 1,
-          message: "Invalid email format!",
-        });
-      }
-      const user = await User.findOne({ email: trimmedEmail });
-      if (!user) {
-        return res.status(404).json({
-          errCode: 1,
-          message: "User not found.",
-        });
-      }
-      user.deleted = true; // Mark the user as deleted
-      await user.save();
-      return res.status(200).json({
-        errCode: 0,
-        message: "User marked as deleted.",
-      });
-    } catch (error) {
-      console.error("Soft delete user error:", error);
-      return res.status(500).json({
-        errCode: 1,
-        message: "Internal server error.",
-        error: error.message,
-      });
-    }
-  },
+  // softDeleteUser: async (req, res) => {
+  //   try {
+  //     const { email } = req.body;
+  //     const trimmedEmail = email?.trim(); // Trim email input
+  //     if (!trimmedEmail) {
+  //       return res.status(400).json({
+  //         errCode: 1,
+  //         message: "Please provide email.",
+  //       });
+  //     }
+  //     if (!regexEmail.test(trimmedEmail)) {
+  //       return res.status(400).json({
+  //         errCode: 1,
+  //         message: "Invalid email format!",
+  //       });
+  //     }
+  //     const user = await User.findOne({ email: trimmedEmail });
+  //     if (!user) {
+  //       return res.status(404).json({
+  //         errCode: 1,
+  //         message: "User not found.",
+  //       });
+  //     }
+  //     user.deleted = true; // Mark the user as deleted
+  //     await user.save();
+  //     return res.status(200).json({
+  //       errCode: 0,
+  //       message: "User marked as deleted.",
+  //     });
+  //   } catch (error) {
+  //     console.error("Soft delete user error:", error);
+  //     return res.status(500).json({
+  //       errCode: 1,
+  //       message: "Internal server error.",
+  //       error: error.message,
+  //     });
+  //   }
+  // },
 };
 
 module.exports = userController;
