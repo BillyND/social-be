@@ -75,19 +75,23 @@ const userController = {
         });
       }
       const user = await User.findOne({ email: trimmedEmail });
+
       if (!user) {
         return res.status(401).json({
           errCode: 1,
           message: "Invalid email or password.",
         });
       }
-      const isPasswordValid = bcrypt.compareSync(password, user.password);
+
+      const isPasswordValid = await bcrypt.compareSync(password, user.password);
+
       if (!isPasswordValid) {
         return res.status(401).json({
           errCode: 1,
           message: "Invalid email or password.",
         });
       }
+
       const token = jwt.sign(
         { userId: user.id, userEmail: user.email },
         process.env.ACCESS_TOKEN_SECRET,
