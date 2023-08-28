@@ -18,6 +18,15 @@ const postSchema = new mongoose.Schema(
     cloudinaryId: {
       type: String,
     },
+    theme: {
+      type: String,
+    },
+    title: {
+      type: String,
+      required: true,
+      minlength: 10,
+      maxlength: 100,
+    },
     description: {
       type: String,
       required: true,

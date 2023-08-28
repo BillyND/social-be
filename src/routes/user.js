@@ -1,20 +1,39 @@
-const express = require("express");
+const router = require("express").Router();
+const middlewareController = require("../controllers/middlewareController");
 const userController = require("../controllers/userController");
-const verifyJWT = require("../middleWare/verifyJWT");
 
-const router = express.Router();
+//UPDATE A USER
+router.put(
+  "/:id",
+  middlewareController.verifyTokenAndUserAuthorization,
+  userController.updateUser
+);
+
+//DELETE A USER
+router.delete(
+  "/:id",
+  middlewareController.verifyTokenAndUserAuthorization,
+  userController.deleteUser
+);
 
 //GET A USER
-router.get("/users/:id", userController.getUserById);
+router.get("/:id", middlewareController.verifyToken, userController.getUser);
 
-//LOGIN
-router.post("/login", userController.loginUser);
+//GET LEADER BOARD USERS
+router.get(
+  "/:id/leaderboard",
+  middlewareController.verifyToken,
+  userController.getLeaderboard
+);
 
-//REGISTER
-router.post("/register", userController.registerUser);
+//FOLLOW A USER
+router.put(
+  "/:id/follow",
+  middlewareController.verifyToken,
+  userController.followUser
+);
 
-//CHANGE PASSWORD
-router.post("/change-password", userController.changePassword);
-// router.post("/delete-user", userController.softDeleteUser);
+//SEARCH FOR USERS
+router.get("/", middlewareController.verifyToken, userController.searchAllUser);
 
 module.exports = router;

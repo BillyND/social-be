@@ -1,222 +1,235 @@
 const Post = require("../models/Post");
 const User = require("../models/User");
+const { cloudinary } = require("../utils/cloudinary");
 
 const postController = {
+  //CREATE A POST
   createPost: async (req, res) => {
     try {
-      const { body, image } = req.body.post;
-      const email = req.body.email;
-      const trimmedEmail = email.trim(); // Trim email input
-
-      const author = await User.findOne({ email: trimmedEmail });
-
-      if (!author) {
-        return res.status(404).json({
-          errCode: 2,
-          message: "Author not found!",
+      const users = await User.findById(req.body.userId);
+      if (req.body.imageUrl) {
+        const result = await cloudinary.uploader.upload(req.body.imageUrl, {
+          upload_preset: "post_image",
         });
+        const makePost = {
+          ...req.body,
+          imageUrl: result.secure_url,
+          cloudinaryId: result.public_id,
+          username: users.username,
+          avaUrl: users.profilePicture,
+          theme: users.theme,
+        };
+        const newPost = new Post(makePost);
+        const savedPost = await newPost.save();
+        return res.status(200).json(savedPost);
+      } else {
+        const makePost = {
+          ...req.body,
+          username: users.username,
+          avaUrl: users.profilePicture,
+          theme: users.theme,
+        };
+        const newPost = new Post(makePost);
+        const savedPost = await newPost.save();
+        return res.status(200).json(savedPost);
       }
-
-      const newPost = {
-        body,
-        image,
-        author: author._id,
-        createdAt: new Date(),
-      };
-
-      const createdPost = await Post.create(newPost);
-
-      return res.status(201).json({
-        errCode: 0,
-        message: "Post created successfully!",
-        data: createdPost,
-      });
-    } catch (error) {
-      return res.status(500).json({
-        errCode: 1,
-        message: "Internal server error!",
-        error: error.message,
-      });
+    } catch (err) {
+      res.status(500).json(err);
     }
   },
 
-  deletePost: async (req, res) => {
-    try {
-      const postId = req.params.postId; // Assuming you pass post ID as a parameter
-      const email = req.body.email;
-      const trimmedEmail = email.trim(); // Trim email input
-
-      const author = await User.findOne({ email: trimmedEmail });
-
-      if (!author) {
-        return res.status(404).json({
-          errCode: 2,
-          message: "Author not found!",
-        });
-      }
-
-      const deletedPost = await Post.findOneAndDelete({
-        _id: postId,
-        author: author._id,
-      });
-
-      if (!deletedPost) {
-        return res.status(404).json({
-          errCode: 3,
-          message: "Post not found or you don't have permission to delete it.",
-        });
-      }
-
-      return res.status(200).json({
-        errCode: 0,
-        message: "Post deleted successfully!",
-        data: deletedPost,
-      });
-    } catch (error) {
-      return res.status(500).json({
-        errCode: 1,
-        message: "Internal server error!",
-        error: error.message,
-      });
-    }
-  },
-
+  //UPDATE A POST
   updatePost: async (req, res) => {
     try {
-      const { body, image } = req.body.post;
-      const trimmedBody = body.trim(); // Trim body input
-      const trimmedImage = image.trim(); // Trim image input
-
-      const postId = req.params.postId.trim(); // Trim postId input
-      const email = req.body.email;
-      const trimmedEmail = email.trim(); // Trim email input
-
-      const author = await User.findOne({ email: trimmedEmail });
-
-      if (!author) {
-        return res.status(404).json({
-          errCode: 2,
-          message: "Author not found!",
-        });
+      const post = await Post.findById(req.params.id.trim());
+      if (post.userId === req.body.userId) {
+        await post.updateOne({ $set: req.body });
+        res.status(200).json("Post has been updated");
+      } else {
+        res.status(403).json("You can only update your post");
       }
-
-      const updatedPost = await Post.findOneAndUpdate(
-        {
-          _id: postId,
-          author: author._id,
-        },
-        {
-          body: trimmedBody,
-          image: trimmedImage,
-          updatedAt: new Date(),
-        },
-        { new: true }
-      );
-
-      if (!updatedPost) {
-        return res.status(404).json({
-          errCode: 3,
-          message: "Post not found or you don't have permission to edit it.",
-        });
-      }
-
-      return res.status(200).json({
-        errCode: 0,
-        message: "Post updated successfully!",
-        data: updatedPost,
-      });
-    } catch (error) {
-      return res.status(500).json({
-        errCode: 1,
-        message: "Internal server error!",
-        error: error.message,
-      });
+    } catch (err) {
+      res.status(500).json(err);
     }
   },
 
+  //DELETE A POST
+  deletePost: async (req, res) => {
+    try {
+      const post = await Post.findById(req.params.id);
+      await Post.findByIdAndDelete(req.params.id);
+      if (post.cloudinaryId) {
+        await cloudinary.uploader.destroy(post.cloudinaryId);
+      }
+      res.status(200).json("Delete post succesfully");
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+
+  //GET ALL POST FROM A USER
+  getPostsFromOne: async (req, res) => {
+    try {
+      const post = await Post.find({ userId: req.params.id });
+      res.status(200).json(post);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+
+  //GET ALL POST FROM USER FOLLOWINGS
+  getFriendsPost: async (req, res) => {
+    try {
+      const currentUser = await User.findById(req.body.userId);
+      const userPost = await Post.find({ userId: req.body.userId });
+      const friendPost = await Promise.all(
+        currentUser.followings.map((friendId) => {
+          return Post.find({ userId: friendId });
+        })
+      );
+      res.status(200).json(userPost.concat(...friendPost));
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+
+  //GET ALL POSTS
   getAllPosts: async (req, res) => {
     try {
-      const posts = await Post.find().sort({
-        updatedAt: -1,
-        createdAt: -1,
-      });
-
-      return res.status(200).json({
-        errCode: 0,
-        message: "Posts retrieved successfully!",
-        data: posts,
-      });
-    } catch (error) {
-      return res.status(500).json({
-        errCode: 1,
-        message: "Internal server error!",
-        error: error.message,
-      });
+      res.status(200).json(res.paginatedResults);
+    } catch (err) {
+      return res.status(500).json(err);
     }
   },
 
-  getPostByAuthor: async (req, res) => {
-    const email = req.params.email; // Use req.body.email to get the author's email
-    const trimmedEmail = email.trim(); // Trim email input
-
+  //GET A POST
+  getAPost: async (req, res) => {
     try {
-      const author = await User.findOne({ email: trimmedEmail });
-
-      if (!author) {
-        return res.status(404).json({
-          errCode: 2,
-          message: "Author not found!",
-        });
-      }
-
-      let postsByAuthor = await Post.find({ author: author._id }).sort({
-        createdAt: -1,
-      });
-
-      // If no updatedAt is available, sort by createdAt
-      if (postsByAuthor.length === 0) {
-        postsByAuthor = await Post.find({ author: author._id }).sort({
-          createdAt: -1,
-        });
-      }
-
-      return res.status(200).json({
-        errCode: 0,
-        message: "Posts by author retrieved successfully!",
-        data: postsByAuthor,
-      });
-    } catch (error) {
-      return res.status(500).json({
-        errCode: 1,
-        message: "Internal server error!",
-        error: error.message,
-      });
+      const post = await Post.findById(req.params.id);
+      res.status(200).json(post);
+    } catch (err) {
+      return res.status(500).json(err);
     }
   },
 
-  likePost: async (req, res) => {
+  //UPVOTE A POST
+  upvotePost: async (req, res) => {
     try {
-      const postId = req.body.postId; // Use req.body.postId to get the post ID
-      const userId = req.user.id;
-
-      const post = await Post.findById(postId);
-      if (!post) {
-        return res.status(404).json({ message: "Post not found" });
+      const post = await Post.findById(req.params.id.trim());
+      if (
+        !post.upvotes.includes(req.body.userId) &&
+        post.downvotes.includes(req.body.userId)
+      ) {
+        await post.updateOne({ $push: { upvotes: req.body.userId } });
+        await post.updateOne({ $pull: { downvotes: req.body.userId } });
+        await User.findOneAndUpdate(
+          { _id: post.userId },
+          { $inc: { karmas: 10 } }
+        );
+        return res.status(200).json("Post is upvoted!");
+      } else if (
+        !post.upvotes.includes(req.body.userId) &&
+        !post.downvotes.includes(req.body.userId)
+      ) {
+        await post.updateOne({ $push: { upvotes: req.body.userId } });
+        await User.findOneAndUpdate(
+          { _id: post.userId },
+          { $inc: { karmas: 10 } }
+        );
+        return res.status(200).json("Post is upvoted!");
+      } else if (post.upvotes.includes(req.body.userId)) {
+        await post.updateOne({ $pull: { upvotes: req.body.userId } });
+        await User.findOneAndUpdate(
+          { _id: post.userId },
+          { $inc: { karmas: -10 } }
+        );
+        return res.status(200).json("Post is no longer upvoted!");
       }
+    } catch (err) {
+      return res.status(500).json(err);
+    }
+  },
 
-      if (post.likes.includes(userId)) {
-        return res.status(400).json({ message: "Post already liked" });
+  //DOWNVOTE POST
+  downvotePost: async (req, res) => {
+    try {
+      const post = await Post.findById(req.params.id.trim());
+      if (
+        !post.downvotes.includes(req.body.userId) &&
+        post.upvotes.includes(req.body.userId)
+      ) {
+        await post.updateOne({ $push: { downvotes: req.body.userId } });
+        await post.updateOne({ $pull: { upvotes: req.body.userId } });
+        //POST OWNER LOSES KARMAS FROM THE DOWNVOTES
+        await User.findOneAndUpdate(
+          { _id: post.userId },
+          { $inc: { karmas: -10 } }
+        );
+        return res.status(200).json("Post is downvoted!");
+      } else if (
+        !post.downvotes.includes(req.body.userId) &&
+        !post.upvotes.includes(req.body.userId)
+      ) {
+        await post.updateOne({ $push: { downvotes: req.body.userId } });
+        await User.findOneAndUpdate(
+          { _id: post.userId },
+          { $inc: { karmas: -10 } }
+        );
+        return res.status(200).json("Post is downvoted!");
+      } else if (post.downvotes.includes(req.body.userId)) {
+        await post.updateOne({ $pull: { downvotes: req.body.userId } });
+        await User.findOneAndUpdate(
+          { _id: post.userId },
+          { $inc: { karmas: 10 } }
+        );
+        return res.status(200).json("Post is no longer downvoted!");
       }
+    } catch (err) {
+      return res.status(500).json(err);
+    }
+  },
 
-      post.likes.push(userId);
-      await post.save();
+  //ADD POST TO FAVORITE
+  addFavoritePost: async (req, res) => {
+    try {
+      const user = await User.findById(req.body.userId);
+      //if post is not in favorite yet
+      if (!user.favorites.includes(req.params.id)) {
+        await User.findByIdAndUpdate(
+          { _id: req.body.userId },
+          {
+            $push: { favorites: req.params.id },
+          },
+          { returnDocument: "after" }
+        );
+        return res.status(200).json("added to favorites");
+      } else {
+        await User.findByIdAndUpdate(
+          { _id: req.body.userId },
+          {
+            $pull: { favorites: req.params.id },
+          }
+        );
+        return res.status(200).json("removed from favorites");
+      }
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
 
-      res.status(200).json({ message: "Post liked successfully" });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Internal Server Error" });
+  //GET FAVORITE POST
+  getFavoritePosts: async (req, res) => {
+    try {
+      const currentUser = await User.findById(req.body.userId);
+      const favoritePost = await Promise.all(
+        currentUser.favorites.map((id) => {
+          return Post.findById(id);
+        })
+      );
+      res.status(200).json(favoritePost);
+    } catch (err) {
+      res.status(500).json(err);
     }
   },
 };
-
 module.exports = postController;
